@@ -1,3 +1,3 @@
 # Hi 
 
-my name is jeyaul Hoque
+my name is Jeyaul Hoque

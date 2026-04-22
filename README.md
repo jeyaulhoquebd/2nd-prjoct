@@ -5,4 +5,4 @@
 ### Jeyaul Hoque 
 
 sum = 0
-for i in 
+for i in  range(1.101);

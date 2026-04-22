@@ -5,4 +5,4 @@
 ### Jeyaul Hoque 
 
 sum = 0
-for
+for i in 

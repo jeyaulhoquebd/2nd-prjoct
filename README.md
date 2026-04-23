@@ -8,4 +8,4 @@ sum = 0
 for i in  range(1.101):
 sum = sum + i 
 
-ult and Coding modes are unchange
+ult and Coding modes are you

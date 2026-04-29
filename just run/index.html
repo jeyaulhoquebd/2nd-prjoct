@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Login System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-8 rounded-xl shadow-lg max-w-sm w-full text-center">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Welcome Back</h2>
+        <p class="text-gray-600 mb-8">Please login to continue</p>
+
+        <div id="buttonDiv" class="flex justify-center"></div>
+
+        <div id="userInfo" class="mt-8 hidden border-t pt-6">
+            <img id="userImg" src="" alt="Profile" class="w-20 h-20 rounded-full mx-auto border-2 border-blue-500">
+            <h3 id="userName" class="mt-4 text-xl font-semibold text-gray-800"></h3>
+            <p id="userEmail" class="text-gray-500 text-sm"></p>
+            <button onclick="logout()" class="mt-6 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition">
+                Logout
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // JWT টোকেন ডিকোড করার ফাংশন
+        function decodeJwtResponse(token) {
+            let base64Url = token.split('.')[1];
+            let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            let jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+
+        // লগইন সফল হলে এই ফাংশনটি কাজ করবে
+        function handleCredentialResponse(response) {
+            const responsePayload = decodeJwtResponse(response.credential);
+
+            // ইউজার ইনফো UI-তে দেখানো
+            document.getElementById('buttonDiv').classList.add('hidden');
+            document.getElementById('userInfo').classList.remove('hidden');
+            
+            document.getElementById('userName').innerText = responsePayload.name;
+            document.getElementById('userEmail').innerText = responsePayload.email;
+            document.getElementById('userImg').src = responsePayload.picture;
+
+            console.log("ID: " + responsePayload.sub);
+            console.log('Full Name: ' + responsePayload.name);
+            console.log('Email: ' + responsePayload.email);
+        }
+
+        window.onload = function () {
+            google.accounts.id.initialize({
+                // আপনার দেওয়া Client ID এখানে বসানো হয়েছে
+                client_id: "141675214416-rg0bqlq1mcm0fp9oq4tpsmud3l54ucn5.apps.googleusercontent.com",
+                callback: handleCredentialResponse
+            });
+
+            google.accounts.id.renderButton(
+                document.getElementById("buttonDiv"),
+                { theme: "outline", size: "large", width: "100%" }  // কাস্টমাইজেশন
+            );
+
+            google.accounts.id.prompt(); // ওয়ান-ট্যাপ লগইন প্রম্পট (ঐচ্ছিক)
+        }
+
+        function logout() {
+            location.reload(); // সিম্পল লগআউট রিফ্রেশ
+        }
+    </script>
+</body>
+</html>
